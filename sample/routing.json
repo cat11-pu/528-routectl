@@ -1,0 +1,39 @@
+{
+  "policy": {
+    "tieBreak": "longest",
+    "maxHops": 4
+  },
+  "subscriptions": [
+    { "id": "s-image-reader",   "pattern": "/image/reader",    "priority": 30, "weight": 30, "filter": "" },
+    { "id": "s-image-star",     "pattern": "/image/*",         "priority": 20, "weight": 7 },
+    { "id": "s-image-deep",     "pattern": "/image/**",        "priority": 20, "weight": 5 },
+    { "id": "s-image-raw",      "pattern": "/image/raw/**",    "priority": 20, "weight": 5, "filter": "mime=tiff" },
+    { "id": "s-media-photo",    "pattern": "/media/**",        "priority": 25, "weight": 25, "filter": "kind=photo" },
+    { "id": "s-media-tag",      "pattern": "/media/**",        "priority": 20, "weight": 20, "filter": "source=host" },
+    { "id": "s-dial-lock",      "pattern": "/dial/**",         "priority": 50, "weight": 50, "exclusive": true },
+    { "id": "s-dial-any",       "pattern": "/dial/*",          "priority": 40, "weight": 40 },
+    { "id": "s-session-result", "pattern": "/session/*/result", "priority": 30, "weight": 30, "allowDuplicate": false },
+    { "id": "s-legacy-forward", "pattern": "/legacy/image/*",  "priority": 30, "weight": 30, "forwardTo": "/image/reader" },
+    { "id": "s-loop-back",      "pattern": "/image/reader",    "priority": 60, "weight": 60, "filter": "mime=loop", "forwardTo": "/legacy/image/x" },
+    { "id": "s-metric-a",       "pattern": "/metric/*",        "priority": 10, "weight": 10 },
+    { "id": "s-metric-b",       "pattern": "/metric/*",        "priority": 10, "weight": 10 },
+    { "id": "s-doc",            "pattern": "/doc/*",           "priority": 15, "weight": 15 },
+    { "id": "s-bad-shape",      "pattern": "image/reader",     "priority": 10, "weight": 1 },
+    { "id": "s-bad-deep",       "pattern": "/image/**/raw",    "priority": 10, "weight": 1 },
+    { "id": "s-bad-star",       "pattern": "/image/re*der",    "priority": 10, "weight": 1 },
+    { "id": "s-bad-filter",     "pattern": "/audit/**",        "priority": 10, "weight": 1, "filter": "size>=" },
+    { "id": "s-doc",            "pattern": "/doc/report",      "priority": 35, "weight": 35 }
+  ],
+  "messages": [
+    { "id": "m1", "path": "/image/reader",      "source": "host", "payload": { "mime": "jpeg" } },
+    { "id": "m2", "path": "/image/raw/tiff",    "source": "plugin/github.com/shibukawa/tobubus/1", "payload": { "mime": "tiff", "bytes": "4096" } },
+    { "id": "m3", "path": "/media/photo/x.jpg", "source": "host", "payload": { "kind": "photo", "source": "host" } },
+    { "id": "m4", "path": "/dial/emergency",    "source": "host", "payload": {} },
+    { "id": "m5", "path": "/session/17/result", "source": "plugin/github.com/shibukawa/tobubus/1", "payload": { "status": "ok" } },
+    { "id": "m6", "path": "/session/18/result", "source": "plugin/github.com/shibukawa/tobubus/1", "payload": { "status": "ok" } },
+    { "id": "m7", "path": "/legacy/image/x",    "source": "host", "payload": { "mime": "loop" } },
+    { "id": "m8", "path": "/metric/cpu",        "source": "host", "payload": { "value": "12" } },
+    { "id": "m9", "path": "/doc/report",        "source": "plugin/github.com/shibukawa/tobubus/2", "payload": { "pages": "3" } },
+    { "id": "m10", "path": "/unknown/path",     "source": "host", "payload": {} }
+  ]
+}
